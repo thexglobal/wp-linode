@@ -2,7 +2,6 @@
 
 DOMAIN=$1
 DOMAIN_="${DOMAIN//./_}"
-PREFIX="simonho4"
 
 # Check if domain is provided
 if [ -z "$DOMAIN" ]; then
@@ -10,11 +9,7 @@ if [ -z "$DOMAIN" ]; then
     exit 1
 fi
 
-if [[ "$DOMAIN" == "simonholding.us" ]]; then
-    WP_DIR="/home2/${PREFIX}/public_html"
-else
-    WP_DIR="/home2/${PREFIX}/public_html/${DOMAIN_}"
-fi
+WP_DIR="/var/www/${DOMAIN_}"
 
 cd $WP_DIR
 
