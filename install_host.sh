@@ -159,3 +159,19 @@ echo "==============================="
 echo "Admin URL: ${WP_URL}/wp-admin"
 echo "Admin password: $ADMIN_PASSWORD"
 echo "DB root password: ${DB_ROOT_PASSWORD}"
+
+# Step 7: Install plugins
+echo "Installing wpforms-lite, elementor, elementor pro, "
+# Install and activate free plugins
+wp plugin install elementor --activate --allow-root
+wp plugin install wpforms-lite --activate --allow-root
+
+# Install and activate Elementor Pro if it exists
+ELEMENTOR_PRO_ZIP=~/wp-linode/elementor-pro-3.21.2.zip
+cp $ELEMENTOR_PRO_ZIP $WP_DIR/elementor-pro.zip
+if [[ -f "$ELEMENTOR_PRO_ZIP" ]]; then
+    wp plugin install elementor-pro.zip --activate --allow-root
+else
+    echo "Elementor Pro zip file does not exist at specified path: $ELEMENTOR_PRO_ZIP"
+fi
+
