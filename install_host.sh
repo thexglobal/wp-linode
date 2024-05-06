@@ -43,7 +43,7 @@ sudo timedatectl set-timezone America/Los_Angeles
 apt update && apt upgrade -y
 
 # Install Nginx, MariaDB, PHP, and necessary PHP extensions
-apt install git nginx mariadb-server php-fpm php-mysql php-dom php-simplexml php-ssh2 php-imagick php-gd php-curl php-mbstring php-xml php-zip wget certbot python3-certbot-nginx unzip -y
+apt install nginx mariadb-server php-fpm php-mysql php-dom php-simplexml php-ssh2 php-imagick php-gd php-curl php-mbstring php-xml php-zip wget certbot python3-certbot-nginx unzip -y
 
 # Start and enable services
 systemctl start nginx
@@ -87,7 +87,7 @@ wp core download --path="$WP_DIR"
 
 # Create wp-config.php
 echo "Configuring WordPress..."
-# wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --dbprefix=$DB_PREFIX --force --allow-root
+wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --dbprefix=$DB_PREFIX --force --allow-root
 
 # cp wp-config-sample.php wp-config.php
 # sed -i "s/database_name_here/${DB_NAME}/" wp-config.php
@@ -100,7 +100,7 @@ ADMIN_USER="admin"
 ADMIN_PASSWORD="$(openssl rand -base64 12)"
 TITLE="New WordPress Site"
 
-wp core install --url="$DOMAIN" --title="$TITLE" --admin_user="$ADMIN_USER" --admin_password="$ADMIN_PASSWORD" --admin_email="$ADMIN_USER@$DOMAIN" --path="$WP_DIR"
+wp core install --url="$DOMAIN" --title="$TITLE" --admin_user="$ADMIN_USER" --admin_password="$ADMIN_PASSWORD" --admin_email="$ADMIN_USER@$DOMAIN" --path="$WP_DIR" --allow-root
 
 # Increase WordPress Memory Limit
 tee -a wp-config.php <<EOM
