@@ -1,0 +1,4 @@
+[console_scripts]
+lin = linodecli:main
+linode = linodecli:main
+linode-cli = linodecli:main
