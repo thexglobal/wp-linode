@@ -86,11 +86,6 @@ wp core download --path="$WP_DIR" --allow-root
 echo "Configuring WordPress..."
 wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --dbprefix=${DB_PREFIX}_ --path="$WP_DIR" --allow-root
 
-# cp wp-config-sample.php wp-config.php
-# sed -i "s/database_name_here/${DB_NAME}/" wp-config.php
-# sed -i "s/username_here/${DB_USER}/" wp-config.php
-# sed -i "s/password_here/${DB_PASSWORD}/" wp-config.php
-
 # Install WordPress
 echo "Installing WordPress..."
 ADMIN_USER="admin"
@@ -100,7 +95,7 @@ TITLE="New WordPress Site"
 wp core install --url="$DOMAIN" --title="$TITLE" --admin_user="$ADMIN_USER" --admin_password="$ADMIN_PASSWORD" --admin_email="${ADMIN_USER}@${DOMAIN}" --path="$WP_DIR" --allow-root
 
 # Define or Update WP_MEMORY_LIMIT
-wp config set WP_MEMORY_LIMIT '256M' --raw --type=constant --path="$WP_DIR" --allow-root
+# wp config set WP_MEMORY_LIMIT '256M' --raw --type=constant --path="$WP_DIR" --allow-root
 
 # Set up correct permissions
 echo "Setting up correct permissions..."
