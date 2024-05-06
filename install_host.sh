@@ -7,7 +7,7 @@ DOMAIN=$1
 DOMAIN_="${DOMAIN//./_}"
 WP_URL="https://$DOMAIN"
 EMAIL="admin@${DOMAIN}"
-PREFIX="wp_"
+PREFIX="wp"
 
 # Ensure the script is run as root
 if [ "$EUID" -ne 0 ]; then 
@@ -22,8 +22,8 @@ if [ -z "$DOMAIN" ]; then
 fi
 
 WP_DIR="/var/www/$DOMAIN_"
-DB_NAME="${PREFIX}${DOMAIN_}"
-DB_USER="${PREFIX}user_${DOMAIN_}"
+DB_NAME="${PREFIX}_${DOMAIN_}"
+DB_USER="${PREFIX}_${DOMAIN_}"
 DB_PASSWORD=$(openssl rand -base64 12) # Generate random password for WordPress database user
 
 DB_ROOT_PASSWORD=$(openssl rand -base64 12) # Generate random Root password for MariaDB
@@ -66,10 +66,7 @@ EOM
 
 echo "Creating MySQL database and user..."
 mysql -e "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;"
-
-mysql -e "CREATE USER IF NOT EXISTS \`${DB_USER}\`@'localhost' IDENTIFIED BY '${DB_PASSWORD}';"
-mysql -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO \`${DB_USER}\`@'localhost';"
-mysql -e "FLUSH PRIVILEGES;"
+mysql -e "CREATE USER \`${DB_USER}\`@'localhost' IDENTIFIED BY '${DB_PASSWORD}'; GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO \`${DB_USER}\`@'localhost'; FLUSH PRIVILEGES;"
 
 # Step 3: Download and Configure WordPress via WP-CLI
 
@@ -83,11 +80,11 @@ mkdir -p "$WP_DIR"
 cd "$WP_DIR"
 
 echo "Downloading WordPress..."
-wp core download --path="$WP_DIR"
+wp core download --path="$WP_DIR" --allow-root
 
 # Create wp-config.php
 echo "Configuring WordPress..."
-wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --dbprefix=$DB_PREFIX --force --allow-root
+wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --dbprefix=${DB_PREFIX}_ --path="$WP_DIR" --allow-root
 
 # cp wp-config-sample.php wp-config.php
 # sed -i "s/database_name_here/${DB_NAME}/" wp-config.php
@@ -100,20 +97,10 @@ ADMIN_USER="admin"
 ADMIN_PASSWORD="$(openssl rand -base64 12)"
 TITLE="New WordPress Site"
 
-wp core install --url="$DOMAIN" --title="$TITLE" --admin_user="$ADMIN_USER" --admin_password="$ADMIN_PASSWORD" --admin_email="$ADMIN_USER@$DOMAIN" --path="$WP_DIR" --allow-root
+wp core install --url="$DOMAIN" --title="$TITLE" --admin_user="$ADMIN_USER" --admin_password="$ADMIN_PASSWORD" --admin_email="${ADMIN_USER}@${DOMAIN}" --path="$WP_DIR" --allow-root
 
-# Increase WordPress Memory Limit
-tee -a wp-config.php <<EOM
-
-define('WP_MEMORY_LIMIT', '256M');
-EOM
-
-# Replace with actual URL and add security keys
-# sed -i "s|http://example.com|${WP_URL}|" wp-config.php
-# curl https://api.wordpress.org/secret-key/1.1/salt/ -o salt.txt
-# sed -i '/AUTH_KEY/r salt.txt' wp-config.php
-# sed -i '/AUTH_KEY/d' wp-config.php
-# rm salt.txt
+# Define or Update WP_MEMORY_LIMIT
+wp config set WP_MEMORY_LIMIT '256M' --raw --type=constant --path="$WP_DIR" --allow-root
 
 # Set up correct permissions
 echo "Setting up correct permissions..."
@@ -175,4 +162,5 @@ echo "Database user: $DB_USER"
 echo "Database password: $DB_PASSWORD"
 echo "==============================="
 echo "Admin URL: ${WP_URL}/wp-admin"
+echo "Admin password: $ADMIN_PASSWORD"
 echo "DB root password: ${DB_ROOT_PASSWORD}"
