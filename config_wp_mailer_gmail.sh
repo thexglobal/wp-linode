@@ -45,14 +45,14 @@ PLUGIN="wp-mail-smtp" # WP Mail SMTP
 
 if ! wp plugin is-installed $PLUGIN; then
     echo "WP Mail SMTP plugin not found. Installing now..."
-    wp plugin install $PLUGIN --activate
+    wp plugin install $PLUGIN --activate --allow-root
 else
     echo "WP Mail SMTP plugin is already installed."
 fi
 
 # Activate the plugin if it is not already active
 if ! wp plugin is-active $PLUGIN; then
-    wp plugin activate $PLUGIN
+    wp plugin activate $PLUGIN --allow-root
 fi
 
 # Navigate to your WordPress directory
