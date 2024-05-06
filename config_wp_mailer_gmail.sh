@@ -75,7 +75,7 @@ JSON_STRING=$(cat <<EOM
 EOM
 )
 
-wp option update wp_mail_smtp "$JSON_STRING" --format=json
+wp option update wp_mail_smtp "$JSON_STRING" --format=json --allow-root
 
 echo "WP Mail SMTP configuration updated successfully."
 
