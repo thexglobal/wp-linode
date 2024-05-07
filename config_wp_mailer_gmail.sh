@@ -10,7 +10,6 @@ if [ -z "$DOMAIN" ]; then
 fi
 
 WP_DIR="/var/www/${DOMAIN_}"
-
 cd $WP_DIR
 
 # Function to retrieve data from 1Password
