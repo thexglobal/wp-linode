@@ -7,7 +7,8 @@ DOMAIN=$1
 DOMAIN_="${DOMAIN//./_}"
 WP_URL="https://$DOMAIN"
 EMAIL="admin@${DOMAIN}"
-PREFIX="wp"
+HOST_PREFIX="wp"
+DB_PREFIX="wp"
 
 # Ensure the script is run as root
 if [ "$EUID" -ne 0 ]; then 
@@ -22,8 +23,8 @@ if [ -z "$DOMAIN" ]; then
 fi
 
 WP_DIR="/var/www/$DOMAIN_"
-DB_NAME="${PREFIX}_${DOMAIN_}"
-DB_USER="${PREFIX}_${DOMAIN_}"
+DB_NAME="${HOST_PREFIX}_${DOMAIN_}"
+DB_USER="${HOST_PREFIX}_${DOMAIN_}"
 DB_PASSWORD=$(openssl rand -base64 12) # Generate random password for WordPress database user
 
 DB_ROOT_PASSWORD=$(openssl rand -base64 12) # Generate random Root password for MariaDB
@@ -95,7 +96,7 @@ TITLE="New WordPress Site"
 wp core install --url="$DOMAIN" --title="$TITLE" --admin_user="$ADMIN_USER" --admin_password="$ADMIN_PASSWORD" --admin_email="${ADMIN_USER}@${DOMAIN}" --path="$WP_DIR" --allow-root
 
 # Define or Update WP_MEMORY_LIMIT
-# wp config set WP_MEMORY_LIMIT '256M' --raw --type=constant --path="$WP_DIR" --allow-root
+# wp config set WP_MEMORY_LIMIT '512M' --raw --type=constant --allow-root --path="$WP_DIR" 
 
 # Set up correct permissions
 echo "Setting up correct permissions..."
